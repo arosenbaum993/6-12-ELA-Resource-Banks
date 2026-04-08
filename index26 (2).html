@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lit &amp; Comp II Resource Bank · McIntosh County Schools</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1410;
+    --ink-soft: #4a403a;
+    --ink-faint: #8a7e78;
+    --cream: #f7f3ee;
+    --cream-dark: #ede7de;
+    --cream-border: #d8cfc5;
+    --accent: #1a4e8a;
+    --accent-soft: #dce8f5;
+    --gold: #c4960a;
+    --gold-soft: #fdf3d0;
+    --teal: #1a6b6b;
+    --teal-soft: #d4ecea;
+    --priority-bg: #f0f5ff;
+    --priority-border: #7ab0e8;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(--ink); min-height: 100vh; }
+
+  header { background: #0f2a4a; color: var(--cream); padding: 28px 40px 24px; border-bottom: 3px solid var(--accent); position: sticky; top: 0; z-index: 100; }
+  .header-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+  .header-eyebrow { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: #7ab0e8; font-weight: 600; margin-bottom: 6px; font-family: 'DM Mono', monospace; }
+  header h1 { font-family: 'Libre Baskerville', serif; font-size: 1.45rem; font-weight: 700; color: var(--cream); line-height: 1.2; }
+  .header-sub { font-size: 12px; color: #a09890; margin-top: 5px; font-weight: 400; }
+  .priority-legend { display: flex; align-items: center; gap: 8px; background: rgba(122,176,232,0.15); border: 1px solid rgba(122,176,232,0.4); border-radius: 6px; padding: 8px 14px; font-size: 11.5px; color: #7ab0e8; font-weight: 500; }
+  .priority-legend .star { font-size: 14px; }
+
+  .search-wrapper { background: #0f2a4a; padding: 20px 40px 28px; border-bottom: 1px solid #1a3a60; }
+  .search-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+  .chip { font-size: 11px; padding: 5px 12px; border-radius: 20px; border: 1px solid #2a4a6a; color: #a09890; cursor: pointer; transition: all 0.15s; font-weight: 500; white-space: nowrap; }
+  .chip:hover { border-color: #7ab0e8; color: #c8dff5; background: rgba(122,176,232,0.12); }
+  .search-row { display: flex; gap: 10px; }
+  textarea { flex: 1; background: #0a1e36; border: 1px solid #2a4a6a; border-radius: 8px; color: var(--cream); font-family: 'DM Sans', sans-serif; font-size: 14px; padding: 13px 16px; resize: none; height: 60px; line-height: 1.5; transition: border-color 0.2s; outline: none; }
+  textarea::placeholder { color: #4a6a8a; }
+  textarea:focus { border-color: #7ab0e8; }
+  .search-controls { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
+  .qty-row { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #5a7a9a; }
+  select { background: #0a1e36; border: 1px solid #2a4a6a; border-radius: 5px; color: var(--cream); font-family: 'DM Sans', sans-serif; font-size: 12px; padding: 5px 10px; outline: none; cursor: pointer; }
+  .btn-generate { background: var(--accent); color: white; border: none; border-radius: 8px; padding: 13px 24px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.15s, transform 0.1s; white-space: nowrap; height: 60px; letter-spacing: 0.3px; }
+  .btn-generate:hover { background: #143e70; }
+  .btn-generate:active { transform: scale(0.98); }
+  .btn-generate:disabled { background: #2a4a6a; cursor: not-allowed; }
+
+  main { max-width: 900px; margin: 0 auto; padding: 32px 24px 60px; }
+  #statusMsg { text-align: center; padding: 18px; font-size: 13.5px; color: var(--ink-faint); display: none; }
+  .cards-grid { display: flex; flex-direction: column; gap: 24px; }
+
+  .resource-card { background: white; border-radius: 10px; border: 1px solid var(--cream-border); overflow: hidden; box-shadow: 0 2px 8px rgba(26,20,16,0.06); animation: cardIn 0.35s ease both; }
+  .resource-card.high-priority { border-color: var(--priority-border); box-shadow: 0 2px 12px rgba(26,78,138,0.15); }
+  @keyframes cardIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+
+  .card-header { padding: 18px 22px 14px; border-bottom: 1px solid var(--cream-border); display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+  .high-priority .card-header { background: var(--priority-bg); border-bottom-color: #b0ccee; }
+  .card-title-block { flex: 1; }
+  .card-badges { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; align-items: center; }
+  .badge { font-size: 10px; font-weight: 600; border-radius: 4px; padding: 3px 8px; letter-spacing: 0.6px; text-transform: uppercase; font-family: 'DM Mono', monospace; }
+  .badge-type-strategy { background: var(--teal-soft); color: var(--teal); }
+  .badge-type-task { background: #ede8f5; color: #5a3a8a; }
+  .badge-type-vocab { background: #fde8d0; color: #8a4010; }
+  .badge-dok { background: var(--cream-dark); color: var(--ink-soft); }
+  .badge-standard { background: var(--accent-soft); color: var(--accent); }
+  .badge-priority { background: #dce8f5; color: #1a4e8a; }
+  .card-title { font-family: 'Libre Baskerville', serif; font-size: 1.05rem; font-weight: 700; color: var(--ink); line-height: 1.3; }
+  .card-actions { display: flex; gap: 6px; flex-shrink: 0; }
+  .btn-icon { background: var(--cream); border: 1px solid var(--cream-border); border-radius: 6px; padding: 6px 10px; font-size: 11px; font-weight: 600; color: var(--ink-soft); cursor: pointer; transition: all 0.15s; font-family: 'DM Sans', sans-serif; }
+  .btn-icon:hover { background: var(--cream-dark); color: var(--ink); }
+  .btn-icon.copied { background: var(--teal-soft); color: var(--teal); border-color: var(--teal); }
+
+  .card-body { padding: 0; }
+  .card-section { padding: 16px 22px; border-bottom: 1px solid var(--cream-border); }
+  .card-section:last-child { border-bottom: none; }
+  .section-label { font-size: 9.5px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 8px; font-family: 'DM Mono', monospace; display: flex; align-items: center; gap: 6px; }
+  .section-label .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--cream-border); flex-shrink: 0; }
+  .section-label.label-teacher .dot { background: var(--teal); }
+  .section-label.label-student .dot { background: #5a3a8a; }
+  .section-label.label-proficient .dot { background: var(--accent); }
+  .section-label.label-mistakes .dot { background: var(--gold); }
+  .answer-key-section { background: #f4faf5; }
+  .answer-key-toggle { display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; width: 100%; background: none; border: none; padding: 0; font-family: 'DM Mono', monospace; font-size: 9.5px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--ink-faint); }
+  .answer-key-toggle:hover { color: #2a6b3a; }
+  .answer-key-toggle.open .toggle-arrow { transform: rotate(180deg); }
+  .toggle-arrow { margin-left: auto; font-size: 10px; transition: transform 0.2s; color: var(--ink-faint); }
+  .answer-key-body { display: none; margin-top: 12px; }
+  .answer-key-body.visible { display: block; }
+  .answer-key-sublabel { font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #2a6b3a; font-family: 'DM Mono', monospace; margin-bottom: 6px; margin-top: 12px; }
+  .answer-key-sublabel:first-child { margin-top: 0; }
+  .vocab-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .vocab-chip { font-size: 11.5px; background: #e4f2e8; color: #1a4a2a; border-radius: 4px; padding: 3px 9px; font-weight: 500; border: 1px solid #b8dfc4; }
+  .model-response { font-size: 13px; line-height: 1.75; color: var(--ink-soft); background: white; border: 1px solid #b8dfc4; border-left: 3px solid #2a6b3a; border-radius: 0 6px 6px 0; padding: 12px 14px; white-space: pre-wrap; }
+  .section-content { font-size: 13.5px; line-height: 1.75; color: var(--ink-soft); white-space: pre-wrap; }
+  .proficient-section { background: #f5f8fd; }
+  .proficient-bar { border-left: 3px solid var(--accent); padding-left: 14px; font-size: 13px; line-height: 1.7; color: var(--ink); font-style: italic; font-family: 'Libre Baskerville', serif; }
+  .mistakes-section { background: #fffdf5; }
+  .mistake-item { display: flex; gap: 10px; margin-bottom: 10px; font-size: 13px; line-height: 1.65; }
+  .mistake-item:last-child { margin-bottom: 0; }
+  .mistake-num { font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 700; color: var(--gold); background: var(--gold-soft); border-radius: 4px; padding: 2px 6px; height: fit-content; flex-shrink: 0; margin-top: 1px; }
+  .mistake-text { color: var(--ink-soft); }
+  .mistake-text strong { color: var(--ink); font-weight: 600; }
+  .empty-state { text-align: center; padding: 60px 20px; color: var(--ink-faint); }
+  .empty-icon { font-size: 2.5rem; margin-bottom: 16px; opacity: 0.5; }
+  .empty-state h2 { font-family: 'Libre Baskerville', serif; font-size: 1.1rem; color: var(--ink-soft); margin-bottom: 8px; }
+  .empty-state p { font-size: 13px; max-width: 400px; margin: 0 auto; line-height: 1.6; }
+  footer { text-align: center; padding: 24px; font-size: 11px; color: var(--ink-faint); border-top: 1px solid var(--cream-border); font-family: 'DM Mono', monospace; letter-spacing: 0.5px; }
+
+  @media (max-width: 600px) {
+    header { padding: 20px; }
+    .search-wrapper { padding: 16px 20px 20px; }
+    .search-row { flex-direction: column; }
+    .btn-generate { height: auto; padding: 12px; }
+    main { padding: 20px 16px 40px; }
+    .card-header { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <div class="header-title-block">
+      <div class="header-eyebrow">McIntosh County Schools · Georgia Milestones Aligned</div>
+      <h1>Literature &amp; Composition II Resource Bank</h1>
+      <div class="header-sub">GSE Standards · 2025–26 Blueprint · ALD-Aligned Proficiency Targets · 8-pt Extended Writing Task</div>
+    </div>
+    <div class="priority-legend">
+      <span class="star">★</span>
+      <span>High-priority standard (Blueprint weighted)</span>
+    </div>
+  </div>
+</header>
+
+<div class="search-wrapper">
+  <div class="search-chips">
+    <span class="chip" onclick="setPrompt('Narrative techniques — students can identify archetypes and symbolism but can\'t analyze how they function in relation to theme and social relevance')">Narrative techniques (10.T.T.1)</span>
+    <span class="chip" onclick="setPrompt('Expository — students need to analyze two texts with conflicting information and determine where they disagree on matters of fact or interpretation')">Expository conflict analysis (10.T.T.2)</span>
+    <span class="chip" onclick="setPrompt('Argumentative — students write claim and evidence but struggle to construct a rebuttal that logically addresses the counterclaim')">Argumentative techniques (10.T.T.3)</span>
+    <span class="chip" onclick="setPrompt('Author perspective — students can compare perspectives but can\'t explain how multiple historical and disciplinary contexts influence those perspectives across time')">Author perspective (10.T.C.2)</span>
+    <span class="chip" onclick="setPrompt('Craft — students need to analyze how rhetorical language choices strategically achieve specific purposes for target audiences')">Rhetorical craft (10.T.SS.2)</span>
+    <span class="chip" onclick="setPrompt('Periods and movements — students can identify archetypes but can\'t explain how modern authors adapt them and what that reveals about purpose and circumstance')">Periods &amp; movements (10.T.PM.1)</span>
+    <span class="chip" onclick="setPrompt('MLA citation and source credibility — students plagiarize unintentionally and can\'t verify author bias or information validity')">Research and MLA citation (10.T.RA.2)</span>
+    <span class="chip" onclick="setPrompt('Syntax — students need to use parallel structure and varied syntax deliberately to reshape sentences for effect')">Syntax for effect (10.L.GC.2)</span>
+  </div>
+  <div class="search-row">
+    <textarea id="requestInput" placeholder="Describe what your students are struggling with, or name a standard… (Ctrl+Enter to generate)" rows="2"></textarea>
+    <div class="search-controls">
+      <div class="qty-row">
+        <span>Generate</span>
+        <select id="qtySelect">
+          <option value="1">1</option>
+          <option value="2" selected>2</option>
+          <option value="3">3</option>
+        </select>
+        <span>resources</span>
+      </div>
+      <button class="btn-generate" id="generateBtn" onclick="generateResources()">Generate Resources</button>
+    </div>
+  </div>
+</div>
+
+<main>
+  <div id="statusMsg"></div>
+  <div class="cards-grid" id="cardsGrid">
+    <div class="empty-state">
+      <div class="empty-icon">📖</div>
+      <h2>Ready to build resources</h2>
+      <p>Select a standard chip above or describe what your students are struggling with. Each resource includes an ALD-aligned proficiency target and common instructional mistakes to avoid.</p>
+    </div>
+  </div>
+</main>
+
+<footer>
+  Lit &amp; Comp II · Georgia Standards of Excellence · Georgia Milestones Blueprint 2025–26 · ALD Proficiency Targets (Oct 2025)
+</footer>
+
+<script>
+const WORKER_URL = 'https://anthropic-proxy.arosenbaum.workers.dev/';
+
+const ALD_DATA = {
+  "10.T.T.1": {
+    label: "Narrative Techniques",
+    proficient: "Analyze the author's use of a provided narrative technique (e.g., archetype, perspective, story structure, symbolism) in a text. Discuss how plot structures, conflict, narrative devices, word choice, and other craft techniques are impacted by an author's purpose. Analyze how a text's theme has social relevance and is developed across a text. Analyze how a theme is developed across a text and provide supportive textual evidence. Explain how literary works draw on a provided theme, event pattern, or character type from different time periods. Apply a narrative technique that establishes mood through setting to achieve a specific purpose, engage an audience, and enhance writing.",
+    priority: true,
+    weight: "Techniques = 14 of 34 Interpreting pts (41%)"
+  },
+  "10.T.T.2": {
+    label: "Expository Techniques",
+    proficient: "Evaluate the effect of expository techniques and/or organizational patterns. Evaluate main ideas in a text and support the main ideas with expository techniques (e.g., facts, statistics, key details, information from text features). Analyze two texts with conflicting information or opposing viewpoints and determine where the texts disagree on matters of fact or interpretations. Apply expository techniques across two paragraphs to develop a cohesive text, organized in a way that clarifies the relationship between ideas, including multiple and varied types of information.",
+    priority: true,
+    weight: "Techniques = 14 of 34 Interpreting pts (41%)"
+  },
+  "10.T.T.3": {
+    label: "Argumentative Techniques",
+    proficient: "Analyze argumentative techniques used to present and design content, including an author's claim, supporting relevant and logical evidence, a counterclaim and rebuttal, and a conclusion that logically follows the argument. Apply more than one argumentative technique across two paragraphs to enhance writing and engage audiences. Evaluate an argument's effectiveness considering the claim, evidence, counterclaim, rebuttal, and conclusion.",
+    priority: true,
+    weight: "Techniques = 14 of 34 Interpreting pts (41%)"
+  },
+  "10.T.T.4": {
+    label: "Poetic Techniques",
+    proficient: "Evaluate a poetic text considering poetic technique(s) used to present and design content. Evaluate poetic techniques used to develop meaning and/or theme(s) in poetic text(s). Apply knowledge of various poetic techniques and conventions to create a poetic text for an intended purpose. Apply poetic techniques to engage the audience and achieve a specific purpose in other text genres (e.g., argumentative, expository).",
+    priority: false
+  },
+  "10.T.C.1": {
+    label: "Purpose & Audience",
+    proficient: "Analyze the development of multiple purposes within a single text and how those purposes target specific audiences. Use text mode features to aid comprehension and analysis of disciplinary texts and their contexts. Construct multimodal texts and/or presentations for a specific purpose and audience using multiple, identifiable features of incorporated modes.",
+    priority: false
+  },
+  "10.T.C.2": {
+    label: "Authors & Speakers",
+    proficient: "Compare and contrast varying perspectives on a particular topic found across a variety of texts, analyzing how texts establish and develop perspectives to shape perceptions or beliefs. Identify overtly commercial influences on texts in audiovisual and digital modes and platforms. Explain how multiple contexts (including historical and disciplinary) influence perspectives across time and the associated implications of text creation. Synthesize information from a variety of credible sources used to research the answer to a question on a provided research topic.",
+    priority: false
+  },
+  "10.T.SS.1": {
+    label: "Organization",
+    proficient: "Analyze how authors use organizational structures or features to convey meaning, respond to the audience, or achieve specific purposes. Design texts, flexibly employing a variety of text structures and text features. Use varied transition words and phrases to connect ideas across multiple paragraphs. Craft a complete introduction that guides the focus and captures the audience by addressing the research question, purpose, and audience.",
+    priority: false
+  },
+  "10.T.SS.2": {
+    label: "Craft & Rhetorical Language",
+    proficient: "Analyze and evaluate how figurative, connotative, and rhetorical language choices contribute to meaning, tone, mood, and purpose in texts. Use literary devices and rhetorical language for intentional effects when creating text to achieve specific purposes or appeal to a target audience. Apply formal or academic style in extended writing for a given purpose.",
+    priority: false
+  },
+  "10.T.RA.1": {
+    label: "Research & Inquiry",
+    proficient: "Generate questions to guide research, make connections between topics, explore solutions, narrow focus, and/or refine text creation. Use multiple analytical findings to support a research question or thesis. Paraphrase, summarize, or quote material to integrate research without plagiarism.",
+    priority: false
+  },
+  "10.T.RA.2": {
+    label: "Curating Sources & Evidence",
+    proficient: "Analyze information from a source by identifying author bias and verifying the validity, relevancy, and accuracy of the information. Follow Modern Language Association (MLA) guidelines when integrating and citing textual evidence or creating a Works Cited entry for a source.",
+    priority: false
+  },
+  "10.T.PM.1": {
+    label: "Periods & Movements",
+    proficient: "Explain how a modern author adapts an archetypal story, myth, event, or figure to new purposes and circumstances. Examine major authors and works of two periods of English or American literary history, including key themes and stylistic features.",
+    priority: false
+  },
+  "10.L.GC.1": {
+    label: "Grammar, Usage & Mechanics",
+    proficient: "Use ellipses appropriately. Use hyphens with appropriate affixes and compound words. Use semicolons, with or without a conjunctive adverb, to form compound and compound-complex sentences. Use colons to introduce lists, examples, and explanations. GUM Master/Reinforce skills assessed from GUM chart.",
+    priority: false
+  },
+  "10.L.GC.2": {
+    label: "Syntax",
+    proficient: "Apply understandings of syntax to comprehend, analyze, and evaluate a wide variety of texts, including analyzing instances of parallel structure. Compose a section of text using varied syntax and reshaping sentences for effect while maintaining consistency of verb tenses, aspects, and moods. Maintain consistent use of active voice in a section of text for deliberate effect. Expand and enrich ideas and information, incorporating details and descriptions to achieve specific purposes or facilitate engagement. Recognize and use parallel structure within a paragraph to create symmetry and convey a congruence of ideas.",
+    priority: false
+  },
+  "10.L.V.1": {
+    label: "General, Academic & Specialized Vocabulary",
+    proficient: "Use grade-level general, academic, and/or disciplinary vocabulary words to communicate clearly and precisely in a variety of settings.",
+    priority: false
+  },
+  "10.L.V.2": {
+    label: "Word Analysis",
+    proficient: "Deconstruct words to determine or clarify meaning using etymology knowledge when the tested Greek and Latin root, root word, or affix is at grade-level. Determine the meanings of words and phrases in context by analyzing the function of parts of speech. Construct and use words based on Greek and Latin roots, root words, and/or affixes and use those words appropriately in context. Use knowledge of parts of speech to determine precise and effective words and phrases when constructing texts.",
+    priority: false
+  },
+  "10.L.V.3": {
+    label: "Meaning & Purpose (Connotation/Denotation)",
+    proficient: "Analyze relationships between words beyond a sentence to determine connotative and denotative meanings for words and/or phrases. Analyze the nuances in connotative meaning of words that share a similar denotation. Use available print and/or digital resources to determine, clarify, or verify the meaning of unknown words.",
+    priority: false
+  }
+};
+
+function buildSystemPrompt() {
+  const aldSummary = Object.entries(ALD_DATA).map(([code, d]) =>
+    `${code} (${d.label}): Proficient = "${d.proficient}"${d.priority ? ' [HIGH-PRIORITY on Blueprint]' : ''}`
+  ).join('\n');
+
+  return `You are an instructional resource generator for McIntosh County Schools, Georgia — a Title I school system. You are building Literature & Composition II ELA resources aligned to Georgia's K-12 ELA Standards (GSE) and the Georgia Milestones Lit & Comp II Assessment Blueprint (2025-26). Lit & Comp II is the 10th-grade ELA course.
+
+You have deep knowledge of:
+- Georgia's 10th Grade ELA Standards (domains: Language, Texts, Practices) — coded with 10.T., 10.L. prefixes
+- The Georgia Milestones Lit & Comp II Assessment Blueprint (2025-26)
+- The Draft Achievement Level Descriptors (ALDs) for Lit & Comp II (October 2025)
+- The 8-point Extended Writing Task that is unique to Lit & Comp II (not present on Grade 7/8 assessments)
+
+BLUEPRINT PRIORITY WEIGHTS (Interpreting Texts domain, 34 pts total):
+- Techniques (10.T.T.1–4): 14 pts = 41% of Interpreting Texts score → HIGHEST PRIORITY
+- Context (10.T.C.1–2): 8 pts (higher weight than middle school — cross-text context analysis is critical)
+- Research & Analysis (10.T.RA.1–2): 6 pts
+- Language (10.L.GC.2, 10.L.V.1–3): 6 pts
+Total test: 60 pts (34 Interpreting + 26 Constructing, includes 8-pt Extended Writing Task)
+
+ALD PROFICIENCY TARGETS BY STANDARD:
+${aldSummary}
+
+EXTENDED WRITING TASK (8 points) — UNIQUE TO LIT & COMP II:
+The Georgia Milestones Lit & Comp II test includes an 8-point Extended Writing Task. Students must write an extended argumentative or expository response to provided texts. The rubric evaluates: ideas and organization (content/argument), language and style (word choice, sentence variety), and conventions (grammar, mechanics). When generating writing tasks or strategies, note the extended writing demand and scaffold accordingly — paragraph-level practice is not sufficient; students need practice with multi-paragraph coherent composition.
+
+For each resource request, generate JSON with this exact structure:
+{
+  "resources": [
+    {
+      "title": "Resource title (specific and instructionally clear)",
+      "type": "strategy" | "task" | "vocabulary",
+      "dok": 2 | 3 | 4,
+      "standard": "10.T.T.1",
+      "standardLabel": "Narrative Techniques",
+      "highPriority": true | false (true only for 10.T.T.1–10.T.T.4),
+      "weightNote": "Techniques = 14 of 34 Interpreting pts" (only if highPriority: true),
+      "teacherContent": "FOR THE TEACHER ONLY. Detailed implementation guide with teacher moves, facilitation language, and what strong student thinking looks like. For writing strategy tasks, include how this connects to the 8-pt Extended Writing Task.",
+      "studentContent": "FOR STUDENTS. Complete student-facing prompt with any stimulus text inline. Use appropriate Grade 10 language — elevated, college-prep register. Empty string '' if type is 'strategy'.",
+      "proficientTarget": "Exact ALD language from the Lit & Comp II Proficient column.",
+      "mistakes": [
+        { "label": "Short mistake name", "explanation": "What the teacher does wrong AND what to do instead. Specific to 10th grade ELA. Name the exact cognitive error." },
+        { "label": "Short mistake name", "explanation": "..." }
+      ],
+      "answerKey": {
+        "vocabToPreTeach": ["word1", "word2"],
+        "modelResponse": "Real student exemplar at Proficient level — write the actual response, not a description. For writing tasks, this should be a complete multi-paragraph model that demonstrates the standard."
+      }
+    }
+  ]
+}
+
+IMPORTANT RULES:
+
+STIMULUS TEXTS — REQUIRED FOR TASKS:
+- Write full stimulus text(s) inline inside studentContent. Never reference external articles.
+- For two-text tasks: write BOTH texts fully, labeled TEXT A: and TEXT B:.
+- Lit & Comp II stimulus texts: 200–350 words. Topics: history, politics, literary criticism, science, ethics, social issues, American and British literary periods. Reading level appropriate for 10th grade — complex vocabulary, subordinate clauses, abstract concepts.
+- No invented statistics or fabricated citations.
+
+GRADE-LEVEL CALIBRATION — STRICT:
+- This is a 10th-grade high school course. Calibrate to the PROFICIENT column of the Lit & Comp II ALD.
+- Key escalations over Grade 8: (1) argumentative now includes EVALUATE an argument's effectiveness — not just analyze its components; (2) expository now requires identifying where two texts DISAGREE on matters of fact vs. interpretation — a higher-order distinction; (3) author perspective now requires explaining how MULTIPLE HISTORICAL AND DISCIPLINARY CONTEXTS influence perspectives ACROSS TIME — not just one context; (4) craft (10.T.SS.2) now includes RHETORICAL language, not just figurative/connotative — analyze persuasive strategies; (5) research now requires MLA citation with Works Cited entries.
+- DOK 2 is the floor. DOK 3 is primary. DOK 4 is appropriate for extended writing tasks and multi-text synthesis.
+- Students are preparing for Lit & Comp III (11th grade) — maintain college-prep expectations.
+
+GENERAL:
+- proficientTarget must pull directly from the Lit & Comp II ALD Proficient column
+- Mistakes must name exact cognitive errors, specific to 10th grade ELA
+- teacherContent is never shown to students
+- vocabToPreTeach: 3–6 words likely challenging even for 10th-grade college-prep students (aim for Tier 2 and 3 academic vocabulary)
+- modelResponse: write a real student exemplar at Proficient level — for writing tasks, include a complete multi-paragraph response
+- Return ONLY valid JSON. No markdown, no preamble.`;
+}
+
+function setPrompt(text) { document.getElementById('requestInput').value = text; document.getElementById('requestInput').focus(); }
+function showStatus(msg, visible = true) { const el = document.getElementById('statusMsg'); el.textContent = msg; el.style.display = visible ? 'block' : 'none'; }
+function escapeHtml(str) { return (str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function badgeClass(type) { if(type==='strategy') return 'badge-type-strategy'; if(type==='task') return 'badge-type-task'; return 'badge-type-vocab'; }
+function typeLabel(type) { if(type==='strategy') return 'Instructional Strategy'; if(type==='task') return 'Student Task'; return 'Vocabulary Activity'; }
+
+async function logUsage(query, resources) {
+  try {
+    const payload = {
+      timestamp: new Date().toISOString(),
+      tool: 'Lit & Comp II ELA Resource Bank',
+      query: query,
+      inferredStandard: [...new Set(resources.map(r => r.standard))].join(', '),
+      resourceType: [...new Set(resources.map(r => typeLabel(r.type)))].join(', ')
+    };
+    await fetch('https://script.google.com/macros/s/AKfycbw9ZyWF2ixcGi1E397UUEwlA4Oey2lNbMkm-_GyhtRl-qSWmWzXdHYG00L5jx7ioxdL/exec', {
+      method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
+    });
+  } catch(e) { console.warn('Logging failed:', e); }
+}
+
+async function generateResources() {
+  const input = document.getElementById('requestInput').value.trim();
+  if (!input) { alert('Please describe what you need or select a standard chip.'); return; }
+  const qty = parseInt(document.getElementById('qtySelect').value);
+  const btn = document.getElementById('generateBtn');
+  btn.disabled = true; btn.textContent = 'Generating…';
+  showStatus('Generating resources aligned to Lit & Comp II GSE standards and ALD proficiency targets…');
+  document.getElementById('cardsGrid').innerHTML = '';
+
+  const userMsg = `Generate ${qty} classroom-ready resource(s) for: "${input}"
+
+Requirements:
+- Align to Lit & Comp II (10th grade) Georgia ELA Standards
+- Mark highPriority: true for Techniques standards (10.T.T.1–4)
+- Vary types across resources if qty > 1
+- Pull proficient target language directly from the Lit & Comp II ALD Proficient column
+- Include 2 specific common instructional mistakes for each resource
+- TASKS: Write FULL stimulus passage(s) inline inside studentContent — never reference external articles
+- For writing tasks: note connection to the 8-point Extended Writing Task when relevant
+- Calibrate to Lit & Comp II ALD Proficient column — college-prep 10th grade rigor
+- Content must be print-ready with no additional materials needed`;
+
+  try {
+    const res = await fetch(WORKER_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 6000, system: buildSystemPrompt(), messages: [{ role: 'user', content: userMsg }] })
+    });
+    if (!res.ok) throw new Error(`API error ${res.status}`);
+    const data = await res.json();
+    const rawText = (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
+    const parsed = JSON.parse(rawText.replace(/```json|```/g,'').trim());
+    const resources = parsed.resources || [];
+    renderCards(resources);
+    showStatus('', false);
+    if (resources.length > 0) logUsage(input, resources);
+  } catch(err) {
+    showStatus('Something went wrong. Check your connection or try again.');
+    console.error(err);
+  } finally {
+    btn.disabled = false; btn.textContent = 'Generate Resources';
+  }
+}
+
+function renderCards(resources) {
+  const grid = document.getElementById('cardsGrid');
+  grid.innerHTML = '';
+  if (!resources.length) { grid.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><h2>No resources returned</h2><p>Try rephrasing your request or selecting a chip.</p></div>'; return; }
+
+  resources.forEach((r, idx) => {
+    const isPriority = !!r.highPriority;
+    const card = document.createElement('div');
+    card.className = 'resource-card' + (isPriority ? ' high-priority' : '');
+    card.style.animationDelay = `${idx * 0.08}s`;
+    const teacherContent = r.teacherContent || r.content || '';
+    const studentContent = r.studentContent || '';
+    const mistakesHtml = (r.mistakes||[]).map((m,i) => `<div class="mistake-item"><span class="mistake-num">0${i+1}</span><span class="mistake-text"><strong>${escapeHtml(m.label)}:</strong> ${escapeHtml(m.explanation)}</span></div>`).join('');
+    const ak = r.answerKey || {};
+    const vocabChips = (ak.vocabToPreTeach||[]).map(w=>`<span class="vocab-chip">${escapeHtml(w)}</span>`).join('');
+    const hasAnswerKey = ak.modelResponse || (ak.vocabToPreTeach && ak.vocabToPreTeach.length);
+    const answerKeyHtml = hasAnswerKey ? `<div class="card-section answer-key-section"><button class="answer-key-toggle" onclick="toggleAnswerKey(this)" id="ak-toggle-${idx}"><span class="dot" style="width:6px;height:6px;border-radius:50%;background:#2a6b3a;flex-shrink:0;"></span>Answer Key &amp; Teacher Notes<span class="toggle-arrow">▼</span></button><div class="answer-key-body" id="ak-body-${idx}">${vocabChips?`<div class="answer-key-sublabel">Vocabulary to Pre-Teach</div><div class="vocab-chips">${vocabChips}</div>`:''}${ak.modelResponse?`<div class="answer-key-sublabel">Model / Exemplar Response</div><div class="model-response" id="model-${idx}">${escapeHtml(ak.modelResponse)}</div>`:''}</div></div>` : '';
+    const studentSection = studentContent ? `<div class="card-section"><div class="section-label label-student"><span class="dot"></span>Student-Facing Resource</div><div class="section-content" id="student-${idx}">${escapeHtml(studentContent)}</div></div>` : '';
+
+    card.innerHTML = `
+      <div class="card-header">
+        <div class="card-title-block">
+          <div class="card-badges">
+            <span class="badge ${badgeClass(r.type)}">${typeLabel(r.type)}</span>
+            <span class="badge badge-dok">DOK ${r.dok||'?'}</span>
+            <span class="badge badge-standard">${escapeHtml(r.standard)}</span>
+            ${isPriority ? `<span class="badge badge-priority">★ Blueprint Priority</span>` : ''}
+          </div>
+          <div class="card-title" id="title-${idx}">${escapeHtml(r.title)}</div>
+          ${isPriority && r.weightNote ? `<div style="font-size:11px;color:#1a4e8a;margin-top:5px;font-family:'DM Mono',monospace;">${escapeHtml(r.weightNote)}</div>` : ''}
+        </div>
+        <div class="card-actions">
+          <button class="btn-icon" onclick="copyCard(${idx})">Copy</button>
+          <button class="btn-icon" onclick="printCard(${idx})">Print</button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-section"><div class="section-label label-teacher"><span class="dot"></span>Teacher Resource</div><div class="section-content" id="content-${idx}">${escapeHtml(teacherContent)}</div></div>
+        ${studentSection}
+        <div class="card-section proficient-section"><div class="section-label label-proficient"><span class="dot"></span>What Proficient Looks Like (ALD)</div><div class="proficient-bar">${escapeHtml(r.proficientTarget)}</div></div>
+        <div class="card-section mistakes-section"><div class="section-label label-mistakes"><span class="dot"></span>Common Instructional Mistakes</div>${mistakesHtml||'<div class="section-content">No mistakes listed.</div>'}</div>
+        ${answerKeyHtml}
+      </div>`;
+    grid.appendChild(card);
+  });
+}
+
+function toggleAnswerKey(btn) {
+  const body = document.getElementById(btn.id.replace('ak-toggle-','ak-body-'));
+  if (!body) return;
+  body.classList.toggle('visible', !body.classList.contains('visible'));
+  btn.classList.toggle('open', !btn.classList.contains('open'));
+}
+
+function copyCard(idx) {
+  const title = document.getElementById(`title-${idx}`)?.textContent || '';
+  const content = document.getElementById(`content-${idx}`)?.textContent || '';
+  const btn = document.querySelector(`.resource-card:nth-child(${idx+1}) .btn-icon`);
+  navigator.clipboard.writeText(`${title}\n\n${content}`).then(() => {
+    if (btn) { btn.textContent = 'Copied!'; btn.classList.add('copied'); setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000); }
+  });
+}
+
+function printCard(idx) {
+  const card = document.querySelectorAll('.resource-card')[idx];
+  if (!card) return;
+  const title = document.getElementById(`title-${idx}`)?.textContent || '';
+  const content = document.getElementById(`content-${idx}`)?.textContent || '';
+  const studentEl = document.getElementById(`student-${idx}`);
+  const studentContent = studentEl?.textContent || '';
+  const badgeText = Array.from(card.querySelectorAll('.badge')).map(b=>b.textContent.trim()).join('  ·  ');
+  const profText = card.querySelector('.proficient-bar')?.textContent || '';
+  const mistakesText = Array.from(card.querySelectorAll('.mistake-item')).map(m=>'• '+m.textContent.trim()).join('\n');
+  const akBody = document.getElementById(`ak-body-${idx}`);
+  const vocabChips = akBody ? Array.from(akBody.querySelectorAll('.vocab-chip')).map(c=>c.textContent.trim()) : [];
+  const modelText = document.getElementById(`model-${idx}`)?.textContent || '';
+  const win = window.open('','_blank');
+  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${title}</title><link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"><style>body{font-family:'DM Sans',sans-serif;padding:40px;max-width:720px;margin:0 auto;color:#1a1410}.eyebrow{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#1a4e8a;margin-bottom:6px}h1{font-family:'Libre Baskerville',serif;font-size:1.25rem;margin-bottom:6px}.meta{font-size:11px;color:#8a7e78;margin-bottom:24px}h2{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#8a7e78;margin:20px 0 8px;border-top:1px solid #e8ddd4;padding-top:14px}h2.green{color:#2a6b3a;border-top-color:#b8dfc4}h2.purple{color:#5a3a8a;border-top-color:#d8ccf0}.section{font-size:13.5px;line-height:1.75;white-space:pre-wrap;color:#4a403a}.proficient{border-left:3px solid #1a4e8a;padding-left:14px;font-style:italic;font-family:'Libre Baskerville',serif;font-size:13px;line-height:1.7;background:#f5f8fd;padding:12px 14px}.model{border-left:3px solid #2a6b3a;background:#f4faf5;padding:12px 14px;font-size:13px;line-height:1.75;white-space:pre-wrap;color:#1a3a24}.vocab-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.vocab-chip{font-size:11.5px;background:#e4f2e8;color:#1a4a2a;border-radius:4px;padding:3px 9px;border:1px solid #b8dfc4}.divider{border:none;border-top:2px dashed #dce8f5;margin:28px 0}footer{margin-top:32px;font-size:10px;color:#aaa;border-top:1px solid #eee;padding-top:10px}</style></head><body><div class="eyebrow">McIntosh County Schools · Lit &amp; Comp II Resource Bank</div><h1>${title}</h1><div class="meta">${badgeText}</div><h2>Teacher Resource</h2><div class="section">${content}</div>${studentContent?`<h2 class="purple">Student-Facing Resource</h2><div class="section">${studentContent}</div>`:''}<h2>What Proficient Looks Like (ALD)</h2><div class="proficient">${profText}</div><h2>Common Instructional Mistakes</h2><div class="section">${mistakesText}</div>${(vocabChips.length||modelText)?`<hr class="divider"><h2 class="green">Answer Key &amp; Teacher Notes</h2>${vocabChips.length?`<strong style="font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#2a6b3a;">Vocabulary to Pre-Teach</strong><div class="vocab-row">${vocabChips.map(w=>`<span class="vocab-chip">${w}</span>`).join('')}</div>`:''}${modelText?`<strong style="font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#2a6b3a;display:block;margin-top:14px;">Model / Exemplar Response</strong><div class="model" style="margin-top:6px;">${modelText}</div>`:''}`:''}
+<footer>Georgia Standards of Excellence · Georgia Milestones Blueprint 2025–26 · ALD Proficiency Targets (Oct 2025)</footer></body></html>`);
+  win.document.close();
+  setTimeout(() => win.print(), 500);
+}
+
+document.getElementById('requestInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) generateResources();
+});
+</script>
+</body>
+</html>
